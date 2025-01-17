@@ -1,79 +1,21 @@
 class Solution {
-private:
-    // find next smallest element index
-    vector<int> nextSmallest(vector<int>& arr) {
-        int n = arr.size();
-        vector<int> ans(n);
-
-        // initialize a stack
-        stack<int> s;
-
-        for (int i = n - 1; i >= 0; i--) {
-            if (s.empty()) {
-                ans[i] = n;
-                s.push(i);
-            } else {
-                if (arr[i] > arr[s.top()]) {
-                    ans[i] = s.top();
-                    s.push(i);
-                } else {
-                    while (!s.empty() && arr[i] <= arr[s.top()]) {
-                        s.pop();
-                    }
-                    if (s.empty()) {
-                        ans[i] = n;
-                        s.push(i);
-                    } else {
-                        ans[i] = s.top();
-                        s.push(i);
-                    }
-                }
-            }
-        }
-        return ans;
-    }
-    // find previous smallest element index
-    vector<int> prevSmallest(vector<int>& arr) {
-        int n = arr.size();
-        vector<int> ans(n);
-
-        // initialize a stack
-        stack<int> s;
-
-        for (int i = 0; i < n; i++) {
-            if (s.empty()) {
-                ans[i] = -1;
-                s.push(i);
-            } else {
-                if (arr[i] > arr[s.top()]) {
-                    ans[i] = s.top();
-                    s.push(i);
-                } else {
-                    while (!s.empty() && arr[i] <= arr[s.top()]) {
-                        s.pop();
-                    }
-                    if (s.empty()) {
-                        ans[i] = -1;
-                        s.push(i);
-                    } else {
-                        ans[i] = s.top();
-                        s.push(i);
-                    }
-                }
-            }
-        }
-        return ans;
-    }
-
 public:
     int largestRectangleArea(vector<int>& heights) {
-        vector<int> prevSmallestIndex = prevSmallest(heights);
-        vector<int> nextSmallestIndex = nextSmallest(heights);
-        vector<int> area(heights.size());
-        for (int i = 0; i < heights.size(); i++) {
-            area[i] =
-                heights[i] * (nextSmallestIndex[i] - prevSmallestIndex[i] - 1);
+        int ans=0;
+        std::vector<int> vec;
+        heights.push_back(0);
+        for(int i=0;i<heights.size();i++){
+            while(vec.size()>0&&heights[i]<=heights[vec.back()]){
+                int process=heights[vec.back()];
+                vec.pop_back();
+
+                int left=(!vec.size())?-1:vec.back();
+                int tmp=(i-left-1)*process;
+                ans=std::max(ans,tmp);
+            }
+            vec.push_back(i);
         }
-        return *max_element(begin(area), end(area));
+        return ans;
+            //save lowest on stack?
     }
 };
